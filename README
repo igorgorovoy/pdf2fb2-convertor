@@ -46,6 +46,53 @@ python pdf_to_fb2_converter.py book.pdf -o output.fb2 -t "My Favorite Book"
 python pdf_to_fb2_converter.py --help
 ```
 
+## Architecture and Flow
+
+### High-level workflow
+
+```mermaid
+graph TD
+    A[CLI entry - main()] --> B[Parse args with argparse]
+    B --> C{Validate input}
+    C -->|valid .pdf| D[Create converter]
+    C -->|invalid| X[Print error and exit]
+    D --> E[convert(title)]
+    E --> F[_extract_text_from_pdf]
+    F --> G[_create_fb2_document]
+    G --> H[_save_fb2]
+    H --> I[Print success]
+```
+
+### Method call sequence inside convert()
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant M as main()
+    participant C as PDFToFB2Converter
+
+    U->>M: run script with args
+    M->>M: parse/validate args
+    M->>C: instantiate converter
+    M->>C: convert(title)
+    activate C
+    C->>C: _extract_text_from_pdf()
+    C-->>C: text_chunks: list[str]
+    C->>C: _create_fb2_document(text_chunks, title)
+    C-->>C: root: Element
+    C->>C: _save_fb2(root)
+    C-->>M: completion
+    deactivate C
+```
+
+### Key responsibilities
+
+- main(): CLI, arguments, validation, orchestration
+- PDFToFB2Converter._extract_text_from_pdf(): read pages, extract text
+- PDFToFB2Converter._clean_text(): normalize whitespace
+- PDFToFB2Converter._create_fb2_document(): build FB2 XML structure
+- PDFToFB2Converter._save_fb2(): pretty-print and write XML to disk
+
 ## Features
 
 - ✅ Automatically extracts text from all PDF pages
