@@ -52,15 +52,15 @@ python pdf_to_fb2_converter.py --help
 
 ```mermaid
 graph TD
-    A[CLI entry - main()] --> B[Parse args with argparse]
-    B --> C{Validate input}
-    C -->|valid .pdf| D[Create converter]
-    C -->|invalid| X[Print error and exit]
-    D --> E[convert(title)]
-    E --> F[_extract_text_from_pdf]
-    F --> G[_create_fb2_document]
-    G --> H[_save_fb2]
-    H --> I[Print success]
+    A["CLI entry - main()"] --> B["Parse args with argparse"]
+    B --> C{"Validate input"}
+    C -->|"valid .pdf"| D["Create converter"]
+    C -->|"invalid"| X["Print error and exit"]
+    D --> E["convert(title)"]
+    E --> F["_extract_text_from_pdf"]
+    F --> G["_create_fb2_document"]
+    G --> H["_save_fb2"]
+    H --> I["Print success"]
 ```
 
 ### Method call sequence inside convert()
